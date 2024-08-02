@@ -62,11 +62,6 @@
         ul li {
             margin: 5px 0;
         }
-        ul li::before {
-            
-            font-size: 1.2em; /* Slightly larger bullet point */
-            margin-right: 8px;
-        }
         #copyButton {
             background-color: #28A745;
         }
@@ -97,11 +92,14 @@
         function processText() {
             let text = document.getElementById('inputText').value;
 
-            // Replace existing bullet points with smaller dot and remove spaces after them
-            text = text.replace(/·\s*/g, '● ');
+            // Replace larger bullets (●) with smaller dots (·)
+            text = text.replace(/●/g, '•');
 
-            // Remove specific codes (WERS codes)
-            text = text.replace(/\[[A-Z0-9]{5}\]/g, '');
+            // Remove 5-digit alphanumeric codes (capital letters and numbers), regardless of their placement
+            text = text.replace(/[A-Z0-9]{5}/g, '');
+
+            // Remove text within parentheses
+            text = text.replace(/\(.*?\)/g, '');
 
             // Handle "Note:" lines specifically to reduce space after them
             text = text.replace(/Note:\s*/g, '<span class="note">Note:</span> ');
