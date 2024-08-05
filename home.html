@@ -98,11 +98,11 @@
             // Remove 5-digit alphanumeric codes (capital letters and numbers)
             text = text.replace(/[A-Z0-9]{5}/g, '');
 
-            // Remove text within parentheses and text that follows
-            text = text.replace(/\(.*?\)[^\n]*/g, '');
-
             // Remove text inside square brackets including the brackets themselves
             text = text.replace(/\[.*?\]/g, '');
+
+            // Remove text within parentheses including the parentheses themselves
+            text = text.replace(/\(.*?\)/g, '');
 
             // Handle "Note:" lines specifically to reduce space after them
             text = text.replace(/Note:\s*/g, '<span class="note">Note:</span> ');
