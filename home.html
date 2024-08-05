@@ -22,7 +22,7 @@
             max-width: 800px;
             margin: auto;
         }
-        #inputText, #outputText {
+        #inputText, #outputText, #codesText {
             width: 100%;
             margin-top: 10px;
             font-size: 14px;
@@ -33,6 +33,9 @@
         }
         #inputText {
             height: 200px;
+        }
+        #codesText {
+            height: 100px;
         }
         button {
             background-color: #0077FF; /* Ford blue color */
@@ -83,26 +86,42 @@
         <div class="box">
             <textarea id="inputText" placeholder="Enter your text here..."></textarea>
         </div>
+        <button id="clearButton" onclick="clearCodes()">Clear Codes</button>
+        <div class="box">
+            <textarea id="codesText" placeholder="Paste your codes here..."></textarea>
+        </div>
         <button onclick="processText()">Process Text</button>
+      
         <button id="copyButton" onclick="copyText()">Copy to Clipboard</button>
         <div id="outputText" class="box"></div>
     </div>
 
     <script>
+        // Store the codes in a variable
+        let storedCodes = [];
+
         function processText() {
             let text = document.getElementById('inputText').value;
 
-            // Replace larger bullets (●) with smaller dots (·)
-            text = text.replace(/●/g, '•');
+            // If codes are not set yet, fetch them from the textarea
+            if (storedCodes.length === 0) {
+                storedCodes = document.getElementById('codesText').value.split('\n').map(code => code.trim()).filter(code => code !== '');
+            }
 
-            // Remove 5-digit alphanumeric codes (capital letters and numbers)
-            text = text.replace(/[A-Z0-9]{5}/g, '');
+            // Replace larger bullets (●) with smaller dots (·)
+            text = text.replace(/●/g, '·');
 
             // Remove text inside square brackets including the brackets themselves
             text = text.replace(/\[.*?\]/g, '');
 
-            // Remove text within parentheses including the parentheses themselves
+            // Remove text within parentheses including the parentheses themselves but keep text after parentheses
             text = text.replace(/\(.*?\)/g, '');
+
+            // Remove codes from text
+            storedCodes.forEach(code => {
+                const regex = new RegExp(code, 'g');
+                text = text.replace(regex, '');
+            });
 
             // Handle "Note:" lines specifically to reduce space after them
             text = text.replace(/Note:\s*/g, '<span class="note">Note:</span> ');
@@ -118,6 +137,13 @@
 
             // Display processed text
             document.getElementById('outputText').innerHTML = htmlText;
+        }
+
+        function clearCodes() {
+            // Clear stored codes
+            storedCodes = [];
+            // Clear the codes textarea
+            document.getElementById('codesText').value = '';
         }
 
         function copyText() {
