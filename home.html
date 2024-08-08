@@ -88,10 +88,9 @@
         </div>
         <button id="clearButton" onclick="clearCodes()">Clear Codes</button>
         <div class="box">
-            <textarea id="codesText" placeholder="Paste your werse codes here from CFD..."></textarea>
+            <textarea id="codesText" placeholder="Paste your codes here..."></textarea>
         </div>
         <button onclick="processText()">Process Text</button>
-      
         <button id="copyButton" onclick="copyText()">Copy to Clipboard</button>
         <div id="outputText" class="box"></div>
     </div>
@@ -109,13 +108,13 @@
             }
 
             // Replace larger bullets (●) with smaller dots (·)
-            text = text.replace(/●/g,'•');
+            text = text.replace(/●/g, '•');
 
             // Remove text inside square brackets including the brackets themselves
             text = text.replace(/\[.*?\]/g, '');
 
-            // Remove text within parentheses including the parentheses themselves but keep text after parentheses
-            text = text.replace(/\(.*?\)/g, '');
+            // Remove only text within parentheses if it contains a three-digit alphanumeric code
+            text = text.replace(/\([A-Za-z0-9]{3}\)/g, ''); 
 
             // Remove codes from text
             storedCodes.forEach(code => {
