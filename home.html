@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -96,34 +96,29 @@
     </div>
 
     <script>
-        // Store the codes in a variable
         let storedCodes = [];
 
         function processText() {
             let text = document.getElementById('inputText').value;
 
-            // If codes are not set yet, fetch them from the textarea
             if (storedCodes.length === 0) {
                 storedCodes = document.getElementById('codesText').value.split('\n').map(code => code.trim()).filter(code => code !== '');
             }
 
-            // Replace larger bullets (●) with smaller dots (·)
-            text = text.replace(/●/g, '•');
+            // Replace special characters and larger bullets (•) with smaller dots (·)
+            text = text.replace(/•/g, '• ');
 
             // Remove text inside square brackets including the brackets themselves
             text = text.replace(/\[.*?\]/g, '');
 
-            // Remove only text within parentheses if it contains a three-digit alphanumeric code
-            text = text.replace(/\([A-Za-z0-9]{3}\)/g, ''); 
+            // Remove text within parentheses containing 3-digit alphanumeric codes but keep text after parentheses
+            text = text.replace(/\(\w{3}\)/g, '');
 
             // Remove codes from text
             storedCodes.forEach(code => {
                 const regex = new RegExp(code, 'g');
                 text = text.replace(regex, '');
             });
-
-            // Handle "Note:" lines specifically to reduce space after them
-            text = text.replace(/Note:\s*/g, '<span class="note">Note:</span> ');
 
             // Convert new lines to HTML list
             const lines = text.split('\n').map(line => {
@@ -134,30 +129,21 @@
             }).join('');
             const htmlText = `<ul>${lines}</ul>`;
 
-            // Display processed text
             document.getElementById('outputText').innerHTML = htmlText;
         }
 
         function clearCodes() {
-            // Clear stored codes
             storedCodes = [];
-            // Clear the codes textarea
             document.getElementById('codesText').value = '';
         }
 
         function copyText() {
-            // Create a temporary textarea element
             const tempTextArea = document.createElement('textarea');
             tempTextArea.value = document.getElementById('outputText').innerText;
             document.body.appendChild(tempTextArea);
-
-            // Select and copy the text
             tempTextArea.select();
             document.execCommand('copy');
-
-            // Remove the temporary textarea
             document.body.removeChild(tempTextArea);
-
             alert('Text copied to clipboard!');
         }
     </script>
