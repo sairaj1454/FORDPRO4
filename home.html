@@ -120,20 +120,22 @@
             // Remove specific three-digit alphanumeric codes inside parentheses
             text = text.replace(/\(\w{3}\)/g, '');
 
-            // Handle "Note:" lines specifically to reduce space after them
-            text = text.replace(/Note:\s*/g, '<span class="note">Note:</span> ');
+            // Loop through stored codes and remove them from the text
+            storedCodes.forEach(code => {
+                const regex = new RegExp(code, 'g');
+                text = text.replace(regex, '');
+            });
 
-            // Convert new lines to HTML list
+            // Preserve line breaks and format the text with bullet points
             const lines = text.split('\n').map(line => {
                 if (line.trim() !== '') {
-                    return `<li>${line.trim()}</li>`;
+                    return line.trim();
                 }
                 return '';
-            }).join('');
-            const htmlText = `<ul>${lines}</ul>`;
+            }).join('\n');
 
-            // Display processed text
-            document.getElementById('outputText').innerHTML = htmlText;
+            // Display processed text as plain text with preserved line breaks
+            document.getElementById('outputText').innerText = lines;
         }
 
         function clearCodes() {
