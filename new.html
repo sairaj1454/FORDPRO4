@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ford Pro Text Setter</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .container {
+            padding: 30px 15px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: #0B2D5C;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .btn-primary {
+            background-color: #0B2D5C;
+            border-color: #0B2D5C;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e4b8f;
+            border-color: #1e4b8f;
+        }
+
+        .btn-success {
+            background-color: #2E7D32;
+            border-color: #2E7D32;
+        }
+
+        textarea {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 16px;
+            resize: vertical;
+            margin: 10px 0;
+        }
+
+        .recent-text-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            margin: 5px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .recent-text-btn:hover {
+            background-color: #e9ecef;
+            border-color: #0B2D5C;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0B2D5C;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://e7.pngegg.com/pngimages/113/140/png-clipart-ford-motor-company-car-ford-f-series-ford-mondeo-auto-parts-emblem-logo.png" alt="Ford Logo">
+                Ford Pro Text Setter
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Text Boxes Section -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Text Boxes</h5>
+            </div>
+            <div class="card-body" id="textBoxesContainer">
+                <!-- Text boxes will be added here -->
+            </div>
+            <div class="card-footer bg-white">
+                <button class="btn btn-primary" onclick="createTextBox()">Add Text Box</button>
+            </div>
+        </div>
+
+        <!-- Common Buttons Section -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Common Actions</h5>
+            </div>
+            <div class="card-body" id="commonButtonsContainer">
+                <!-- Default Buttons -->
+                <button class="btn btn-success me-2" onclick="addToOutput('Available')">Available</button>
+                <button class="btn btn-success me-2" onclick="addToOutput('Standard')">Standard</button>
+                <button class="btn btn-success me-2" onclick="addToOutput('Optional')">Optional</button>
+                <button class="btn btn-success me-2" onclick="addToOutput(',')">,</button>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Output</h5>
+            </div>
+            <div class="card-body p-4">
+                <textarea class="form-control" id="output" placeholder="Your output will appear here..."></textarea>
+                <button class="btn btn-success mt-3" onclick="copyText()">Copy Output</button>
+            </div>
+        </div>
+
+        <!-- Recent Texts Section -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Texts</h5>
+            </div>
+            <div class="card-body">
+                <div id="recentTextsContainer" class="d-flex flex-wrap">
+                    <!-- Recent text buttons will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let recentTexts = [];
+
+        function createTextBox() {
+            const container = document.getElementById('textBoxesContainer');
+            const inputBox = document.createElement('input');
+            inputBox.type = 'text';
+            inputBox.placeholder = 'Enter text here...';
+            inputBox.onblur = function() {
+                const trimmedValue = inputBox.value.trim();
+                if (trimmedValue) {
+                    const textButton = document.createElement('button');
+                    textButton.className = 'btn btn-success me-2'; 
+                    textButton.innerText = trimmedValue;
+                    textButton.onclick = function() {
+                        addToOutput(textButton.innerText);
+                    };
+                    document.getElementById('commonButtonsContainer').appendChild(textButton);
+                    container.removeChild(inputBox);
+                } else {
+                    // Remove the empty input box
+                    container.removeChild(inputBox);
+                }
+            };
+            container.appendChild(inputBox);
+            inputBox.focus();
+        }
+
+        function addToOutput(text) {
+            const outputBox = document.getElementById('output');
+            const lastChar = outputBox.value.slice(-1);
+
+            if (text === ',') {
+                // Add comma directly without space
+                outputBox.value = outputBox.value.trimEnd() + text;
+            } else if (text === 'On') {
+                // Add "On" directly without space
+                outputBox.value = outputBox.value.trimEnd() + text;
+            } else if (lastChar === ',' || outputBox.value === '') {
+                // Add text directly after a comma or at the start
+                outputBox.value += text;
+            } else {
+                // Add text with a space
+                outputBox.value += ' ' + text;
+            }
+        }
+
+        function copyText() {
+            const outputBox = document.getElementById('output');
+            const textToCopy = outputBox.value.trim();
+            
+            if (textToCopy && !recentTexts.includes(textToCopy)) {
+                outputBox.select();
+                document.execCommand('copy');
+                addToRecentTexts(textToCopy);
+                recentTexts.push(textToCopy);
+
+                // Clear the text area
+                outputBox.value = '';
+            }
+        }
+
+        function addToRecentTexts(text) {
+            const recentTextsContainer = document.getElementById('recentTextsContainer');
+            
+            // Create a button for the recent text
+            const recentButton = document.createElement('button');
+            recentButton.className = 'recent-text-btn';
+            recentButton.innerText = text;
+            recentButton.onclick = function() {
+                // Copy the recent text to the clipboard
+                navigator.clipboard.writeText(text);
+            };
+
+            // Append the button to the recent texts container
+            recentTextsContainer.appendChild(recentButton);
+        }
+    </script>
+</body>
+</html>
